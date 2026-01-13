@@ -3,120 +3,140 @@ const data = [
         id: 1,
         name: 'நாட்டுச்சக்கரை',
         price: 100,
+        unit: 'கிலோ',
         pronunciation: ['நாட்டுச்சக்கரை'],
     },
     {
         id: 2,
         name: 'தேங்காய் எண்ணெய்',
         price: 280,
+        unit: 'லிட்டர்',
         pronunciation: ['தேங்காய் எண்ணெய்'],
     },
     {
         id: 3,
         name: 'சோன்பப்படி',
         price: 25,
+        unit: '',
         pronunciation: ['சோன்பப்படி'],
     },
     {
         id: 4,
         name: 'மணிலா பர்பி',
         price: 50,
+        unit: '',
         pronunciation: ['மணிலா பர்பி'],
     },
     {
         id: 5,
         name: 'கடலை மிட்டாய்',
         price: 50,
+        unit: '',
         pronunciation: ['கடலை மிட்டாய்'],
     },
     {
         id: 6,
         name: 'கருப்பட்டி கடலை மிட்டாய்',
         price: 70,
+        unit: '',
         pronunciation: ['கருப்பட்டி கடலை மிட்டாய்'],
     },
     {
         id: 7,
         name: 'திருநெல்வேலி அல்வா',
         price: 240,
+        unit: 'கிலோ',
         pronunciation: ['திருநெல்வேலி அல்வா'],
     },
     {
         id: 8,
         name: 'மஸ்கோத் அல்வா',
         price: 200,
+        unit: 'கிலோ',
         pronunciation: ['மஸ்கோத் அல்வா'],
     },
     {
         id: 9,
         name: 'கருப்பட்டி அல்வா',
         price: 280,
+        unit: 'கிலோ',
         pronunciation: ['கருப்பட்டி அல்வா'],
     },
     {
         id: 10,
         name: 'கத்தரிக்காய்',
         price: 50,
+        unit: 'கிலோ',
         pronunciation: ['கத்தரிக்காய்'],
     },
     {
         id: 11,
         name: 'வாழைப்பழம்',
         price: 30,
+        unit: 'கிலோ',
         pronunciation: ['வாழைப்பழம்'],
     },
     {
         id: 12,
         name: 'எலுமிச்சம் பழம்',
         price: 120,
+        unit: 'கிலோ',
         pronunciation: ['எலுமிச்சம் பழம்'],
     },
     {
         id: 13,
         name: 'சிரட்டை கரி',
         price: 50,
+        unit: 'கிலோ',
         pronunciation: ['சிரட்டை கரி'],
     },
     {
         id: 14,
         name: 'கம்பு கரி',
         price: 40,
+        unit: 'கிலோ',
         pronunciation: ['கம்பு கரி'],
     },
     {
         id: 15,
         name: 'வைக்கோல்',
         price: 300,
+        unit: '',
         pronunciation: ['வைக்கோல்'],
     },
     {
         id: 16,
         name: 'சிரட்டை',
         price: 8,
+        unit: 'கிலோ',
         pronunciation: ['சிரட்டை'],
     },
     {
         id: 17,
         name: 'ஒன்னாம் நம்பர் கொப்பரை',
         price: 90,
+        unit: 'கிலோ',
         pronunciation: ['ஒன்னாம் நம்பர் கொப்பரை'],
     },
     {
         id: 18,
         name: 'இரண்டாம் நம்பர் கொப்பரை',
         price: 70,
+        unit: 'கிலோ',
         pronunciation: ['இரண்டாம் நம்பர் கொப்பரை'],
     },
     {
         id: 19,
         name: 'விடலை தேங்காய்',
         price: 24,
+        unit: 'கிலோ',
         pronunciation: ['விடலை தேங்காய்'],
     },
     {
         id: 20,
         name: 'சோங்கு தேங்காய்',
         price: 8,
+        unit: 'கிலோ',
         pronunciation: ['சோங்கு தேங்காய்'],
     },
 ]
@@ -171,18 +191,12 @@ function FindProduct(command) {
         return searchResults
     })
 
-    searchResult.forEach((item) => {
-        if (item.length > 0) {
-            product = item[0].searchTerm
-        }
-    })
-
-    const fileredProducts = searchResult.filter((item) => item?.length > 0)
-    if (fileredProducts?.length > 0) {
+    const filteredProducts = searchResult.filter((item) => item?.length > 0)
+    if (filteredProducts?.length > 0) {
         const minimumDistance = Math.min(
-            ...fileredProducts.map((item) => item[0].distance)
+            ...filteredProducts.map((item) => item[0].distance)
         )
-        const finalProduct = searchResult.filter(
+        const finalProduct = filteredProducts.filter(
             (item) => item[0]?.distance == minimumDistance
         )[0]
         return finalProduct[0].product

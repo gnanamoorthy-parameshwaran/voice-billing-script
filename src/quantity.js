@@ -111,6 +111,7 @@ function QuantityConversion(successfullFind) {
                     // Kilo to gram
                     const result = MultiplyByThousand(object.from.quantity)
                     console.log(result)
+                    quantity += result
                 } else if (
                     unit1 === CurrentArray[1] &&
                     unit2 === CurrentArray[0]
