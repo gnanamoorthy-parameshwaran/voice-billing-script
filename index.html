@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Text recognition</title>
+  <script src="./src/script.js"></script>
+
+<body>
+  <h1 style="text-align: center">Voice Billing</h1>
+  <div style="display: flex;align-items: center;justify-content: center;">
+    <form style="text-align:center;" onsubmit="return false">
+      <button onclick="SpeechRecognitionService()">Start</button>
+      <textarea style="display: block;" type="text" name="text" id="text" rows="10"></textarea>
+      <button onclick="findProduct()">Find product</button>
+    </form>
+  </div>
+
+  <div>
+    <h1>Result</h1>
+    <pre id="result"></pre>
+  </div>
+
+  <script>
+    function findProduct() {
+      const string = document.getElementById('text').value;
+      const result = HandleCommand(string)
+      document.getElementById('result').innerHTML = JSON.stringify(result, null, 4)
+    }
+  </script>
+</body>
+
+</html>
