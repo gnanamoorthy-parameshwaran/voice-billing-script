@@ -377,9 +377,73 @@ const testCommands = [
     'வெங்காயம் அரை கிலோ',
 ]
 
-testCommands.forEach((cmd) => {
-    console.log('\n--- Test Command:', cmd, '---')
-    const result = parseVoiceInput(cmd)
-    const formatted = formatResult(result)
-    console.log('Result:', formatted)
-})
+if (typeof window === 'undefined') {
+    testCommands.forEach((cmd) => {
+        console.log('\n--- Test Command:', cmd, '---')
+        const result = parseVoiceInput(cmd)
+        const formatted = formatResult(result)
+        console.log('Result:', formatted)
+    })
+}
+
+// Browser: SpeechRecognition helper and global exports
+function SpeechRecognitionService() {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+        console.warn('SpeechRecognitionService is only available in the browser')
+        return
+    }
+
+    const startBtn = document.getElementById('startBtn')
+    const textArea = document.getElementById('text')
+    if (!window._srInstance) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+        if (!SpeechRecognition) {
+            alert('Speech recognition not supported in this browser')
+            return
+        }
+
+        const recognition = new SpeechRecognition()
+        recognition.lang = 'ta-IN'
+        recognition.interimResults = true
+        recognition.continuous = false
+
+        recognition.onstart = () => {
+            window._srRunning = true
+            if (startBtn) startBtn.innerText = 'Stop'
+        }
+
+        recognition.onresult = (event) => {
+            let transcript = ''
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                transcript += event.results[i][0].transcript
+            }
+            if (textArea) textArea.value = transcript.trim()
+        }
+
+        recognition.onerror = (e) => {
+            console.error('Speech recognition error', e)
+        }
+
+        recognition.onend = () => {
+            window._srRunning = false
+            if (startBtn) startBtn.innerText = 'Start'
+        }
+
+        window._srInstance = recognition
+    }
+
+    // Toggle start/stop
+    if (window._srRunning) {
+        window._srInstance.stop()
+    } else {
+        window._srInstance.start()
+    }
+}
+
+// Expose useful functions to the window for the page
+if (typeof window !== 'undefined') {
+    window.parseVoiceInput = parseVoiceInput
+    window.formatResult = formatResult
+    window.SpeechRecognitionService = SpeechRecognitionService
+    window.PRODUCTS = PRODUCTS
+}

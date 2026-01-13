@@ -5,30 +5,74 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Text recognition</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 0; background:#fafafa; color:#222 }
+    header { background: #2b6cb0; color: white; padding: 18px 12px; text-align: center }
+    .container { display: flex; gap: 24px; padding: 24px; max-width: 1000px; margin: 16px auto }
+    .panel { background: white; padding: 16px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); flex:1 }
+    textarea { width: 100%; min-height: 120px; font-size: 16px; padding: 8px }
+    button { background:#2b6cb0; color:white; border:none; padding:10px 14px; border-radius:6px; cursor:pointer }
+    button[aria-pressed="true"] { background:#1e4e86 }
+    #catalog { max-height: 240px; overflow:auto; font-size:14px }
+    pre { background:#f3f4f6; padding:12px; border-radius:6px }
+    .controls { display:flex; gap:8px; align-items:center; margin-bottom:8px }
+  </style>
 </head>
 
 <body>
-  <script src="./src/script.js"></script>
-  <h1 style="text-align: center">Voice Billing</h1>
-  <div style="display: flex;align-items: center;justify-content: center;">
-    <form style="text-align:center;" onsubmit="return false">
-      <button onclick="SpeechRecognitionService()">Start</button>
-      <textarea style="display: block;" type="text" name="text" id="text" rows="10"></textarea>
-      <button onclick="findProduct()">Find product</button>
-    </form>
+  <header>
+    <h1>Voice Billing</h1>
+  </header>
+
+  <div class="container">
+    <div class="panel">
+      <div class="controls">
+        <button id="startBtn" type="button" onclick="SpeechRecognitionService()">Start</button>
+        <button id="findBtn" type="button">Find product</button>
+        <span id="status" style="margin-left:8px;color:#666;font-size:14px"></span>
+      </div>
+
+      <label for="text">Recognized text</label>
+      <textarea id="text" name="text" rows="6" placeholder="Speak or type here..."></textarea>
+
+      <h3 style="margin-top:12px">Result</h3>
+      <pre id="result">No result yet</pre>
+    </div>
+
+    <div class="panel">
+      <h3>Product Catalog</h3>
+      <div id="catalog">Loading catalog…</div>
+    </div>
   </div>
 
-  <div>
-    <h1>Result</h1>
-    <pre id="result"></pre>
-  </div>
+  <script src="./src/script.js"></script>
+  <script src="./src/main.js"></script>
 
   <script>
-    function findProduct() {
-      const string = document.getElementById('text').value;
-      const result = HandleCommand(string)
-      document.getElementById('result').innerHTML = JSON.stringify(result, null, 4)
+    // Wire the Find button to the parser
+    document.getElementById('findBtn').addEventListener('click', () => {
+      const string = document.getElementById('text').value.trim()
+      if (!string) {
+        document.getElementById('result').textContent = 'Please speak or enter some text.'
+        return
+      }
+      const result = typeof parseVoiceInput === 'function' ? parseVoiceInput(string) : null
+      const output = typeof formatResult === 'function' && result ? formatResult(result) : result
+      document.getElementById('result').textContent = JSON.stringify(output, null, 4)
+    })
+
+    // Render product catalog if PRODUCTS is available
+    function renderCatalog() {
+      const container = document.getElementById('catalog')
+      if (typeof PRODUCTS === 'undefined' || !Array.isArray(PRODUCTS)) {
+        container.textContent = 'No catalog available.'
+        return
+      }
+      const rows = PRODUCTS.map(p => `<div style="padding:6px 0;border-bottom:1px solid #eee"><strong>${p.name}</strong> — ₹${p.price} ${p.unit || ''}</div>`).join('')
+      container.innerHTML = rows
     }
+
+    renderCatalog()
   </script>
 </body>
 
